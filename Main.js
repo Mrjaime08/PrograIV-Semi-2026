@@ -24,12 +24,13 @@ function guardarAlumno() {
  
 function getId(){
     return localStorage.length + 1;
-
+}
  
 function limpiarFormulario(){
     frmAlumnos.reset();
 }
  
+
 function buscarAlumno(codigo=''){
     let n = localStorage.length;
     for(let i = 0; i < n; i++){
