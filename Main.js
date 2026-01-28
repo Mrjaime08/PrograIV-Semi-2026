@@ -24,7 +24,7 @@ function guardarAlumno() {
  
 function getId(){
     return localStorage.length + 1;
-}
+
  
 function limpiarFormulario(){
     frmAlumnos.reset();
