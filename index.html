@@ -3,186 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión de Alumnos</title>
+    <title>Sistema Académico Vue+Dexie</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <style>
-        body { 
-            background-color: #eef2f7; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        body { background-color: #eef2f7; font-family: 'Segoe UI', sans-serif; }
+        
         /* Estilos de Tarjetas */
-        .card-custom {
-            background: white; border: none; border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05); overflow: hidden;
-        }
-        .card-header-custom {
-            background: linear-gradient(135deg, #0d6efd, #0a58ca);
-            color: white; padding: 15px; font-weight: 600;
-            text-transform: uppercase; font-size: 0.9rem;
-        }
-        /* Inputs */
-        .form-control, .form-select {
-            background-color: #f8f9fa; border: 1px solid #dee2e6;
-            border-radius: 8px; padding: 10px; font-size: 0.9rem;
-        }
-        .form-control:focus, .form-select:focus {
-            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15);
-            border-color: #86b7fe; background-color: #fff;
-        }
-        .form-label-custom {
-            font-size: 0.75rem; font-weight: 700; color: #6c757d;
-            margin-bottom: 4px; text-transform: uppercase;
-        }
-        /* Tabla */
+        .card-custom { border: none; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); overflow: hidden; }
+        .card-header-custom { background: linear-gradient(135deg, #0d6efd, #0a58ca); color: white; padding: 15px; font-weight: 600; letter-spacing: 1px; }
+        
+        /* Estilos de Inputs */
+        .form-label-custom { font-size: 0.75rem; font-weight: 700; color: #6c757d; margin-bottom: 4px; text-transform: uppercase; }
+        .form-control:focus, .form-select:focus { box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15); border-color: #86b7fe; }
+        
+        /* Estilos de Tabla */
         .table-custom thead { background-color: #343a40; color: white; }
         .table-custom th { font-weight: 500; border: none; padding: 12px; }
-        .table-custom td { vertical-align: middle; padding: 12px; font-size: 0.9rem; }
-        .table-hover tbody tr:hover {
-            background-color: #f1f5f9; transform: scale(1.002);
-            transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        
         /* Botones */
-        .btn-custom { border-radius: 8px; padding: 8px 20px; font-weight: 600; transition: all 0.3s; }
-        .btn-custom:hover { transform: translateY(-2px); }
+        .btn-custom { border-radius: 8px; font-weight: 600; }
+        
+        /* Buscador en cabecera */
+        .input-group input::placeholder { color: rgba(255,255,255,0.7); }
     </style>
 </head>
 <body>
-
-    <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
-        <div class="container-fluid px-4">
-            <span class="navbar-brand mb-0 h1"><i class="bi bi-mortarboard-fill me-2"></i>Plataforma Académica</span>
-        </div>
-    </nav>
-
-    <div class="container-fluid px-4">
-        <div class="row g-4">
-            
-            <div class="col-lg-3 col-md-4">
-                <form id="frmAlumnos">
-                    <div class="card card-custom h-100">
-                        <div class="card-header-custom text-center">
-                            <i class="bi bi-person-plus-fill me-2"></i> Nuevo Registro
-                        </div>
-                        <div class="card-body p-4">
-                            
-                            <div class="mb-3">
-                                <label class="form-label-custom">Código Estudiante</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="bi bi-upc-scan"></i></span>
-                                    <input id="txtCodigoAlumno" type="text" class="form-control" required placeholder="Ej: USSS9870">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label-custom">Nombre Completo</label>
-                                <input id="txtnombreAlumno" type="text" class="form-control" required placeholder="Nombre y Apellidos">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label-custom">Dirección de Residencia</label>
-                                <textarea id="txtDireccionAlumno" class="form-control" rows="2" required placeholder="Dirección exacta"></textarea>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <label class="form-label-custom">Municipio</label>
-                                    <input id="txtMunicipioAlumno" type="text" class="form-control" required>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label-custom">Departamento</label>
-                                    <input id="txtDeptoAlumno" type="text" class="form-control" required>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <label class="form-label-custom">Fecha Nac.</label>
-                                    <input id="txtFechaAlumno" type="date" class="form-control" required>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label-custom">Sexo</label>
-                                    <select id="txtSexoAlumno" class="form-select">
-                                        <option value="Masculino">Masculino</option>
-                                        <option value="Femenino">Femenino</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label-custom">Correo Electrónico</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
-                                    <input id="txtEmailAlumno" type="email" class="form-control" required placeholder="correo@ejemplo.com">
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label-custom">Teléfono</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="bi bi-telephone"></i></span>
-                                    <input id="txtTelefonoAlumno" type="text" class="form-control" required placeholder="0000-0000">
-                                </div>
-                            </div>
-
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-custom shadow-sm">
-                                    <i class="bi bi-save me-2"></i> GUARDAR DATOS
-                                </button>
-                                <button type="reset" class="btn btn-outline-secondary btn-custom">
-                                    <i class="bi bi-arrow-counterclockwise me-2"></i> LIMPIAR
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="col-lg-9 col-md-8">
-                <div class="card card-custom h-100">
-                    <div class="card-header-custom d-flex justify-content-between align-items-center">
-                        <span><i class="bi bi-people-fill me-2"></i> Directorio de Estudiantes</span>
-                        <span class="badge bg-light text-primary rounded-pill px-3">Oficial 2026</span>
-                    </div>
-                    
-                    <div class="p-3 border-bottom bg-light">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white text-muted border-end-0">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="search" id="txtBusqueda" class="form-control border-start-0 ps-0" placeholder="Buscar por nombre, código o teléfono...">
-                        </div>
-                    </div>
-
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-custom mb-0" id="tblAlumnos">
-                                <thead>
-                                    <tr>
-                                        <th>CÓDIGO</th>
-                                        <th>ESTUDIANTE</th>
-                                        <th>DIRECCIÓN</th>
-                                        <th>UBICACIÓN</th>
-                                        <th>SEXO</th>
-                                        <th>CONTACTO</th>
-                                        <th class="text-center">OPCIONES</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    </tbody>
-                            </table>
-                        </div>
-                    </div>
+    
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="#"><i class="bi bi-mortarboard-fill me-2"></i>SISTEMA ACADÉMICO</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{ active: forms.alumnos.mostrar }" href="#" @click="abrirVentana('alumnos')">
+                                <i class="bi bi-plus-circle me-1"></i> Nuevo Alumno
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{ active: forms.busqueda_alumnos.mostrar }" href="#" @click="abrirVentana('busqueda_alumnos')">
+                                <i class="bi bi-search me-1"></i> Buscar Alumnos
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
+        </nav>
 
+        <div class="container pb-5">
+            <alumnos ref="alumnos" v-show="forms.alumnos.mostrar"></alumnos>
+            
+            <busqueda_alumnos ref="busqueda" v-show="forms.busqueda_alumnos.mostrar"></busqueda_alumnos>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="main.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+
+    <script src="alumnos.js"></script>
+    <script src="busqueda_alumnos.js"></script>
+    
+    <script src="Main.js"></script>
 </body>
 </html>
