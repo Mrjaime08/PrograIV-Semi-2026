@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Académico Vue+Dexie</title>
+    <title>Sistema Académico</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/vue-select@beta/dist/vue-select.css">
     
     <style>
         body { background-color: #eef2f7; font-family: 'Segoe UI', sans-serif; }
@@ -24,10 +26,13 @@
         .table-custom th { font-weight: 500; border: none; padding: 12px; }
         
         /* Botones */
-        .btn-custom { border-radius: 8px; font-weight: 600; }
+        .btn-custom { border-radius: 8px; font-weight: 600; margin-right: 5px; }
         
         /* Buscador en cabecera */
         .input-group input::placeholder { color: rgba(255,255,255,0.7); }
+        
+        /* Ajuste visual para el vue-select */
+        .v-select .vs__dropdown-toggle { background: white; border-radius: 6px; padding: 4px; border: 1px solid #dee2e6; }
     </style>
 </head>
 <body>
@@ -35,40 +40,55 @@
     <div id="app">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" href="#"><i class="bi bi-mortarboard-fill me-2"></i>SISTEMA ACADÉMICO</a>
+                <a class="navbar-brand fw-bold" href="#">::.. SISTEMA ACADÉMICO ..::</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" :class="{ active: forms.alumnos.mostrar }" href="#" @click="abrirVentana('alumnos')">
-                                <i class="bi bi-plus-circle me-1"></i> Nuevo Alumno
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" :class="{ active: forms.busqueda_alumnos.mostrar }" href="#" @click="abrirVentana('busqueda_alumnos')">
-                                <i class="bi bi-search me-1"></i> Buscar Alumnos
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" :class="{ active: forms.alumnos.mostrar }" href="#" @click="abrirVentana('alumnos')">Alumnos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" @click="abrirVentana('materias')">Materias</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" @click="abrirVentana('matriculas')">Matrículas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" @click="abrirVentana('inscripciones')">Inscripciones</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <div class="container pb-5">
-            <alumnos ref="alumnos" v-show="forms.alumnos.mostrar"></alumnos>
+        <div id="appSistema" class="container pb-5">
             
-            <busqueda_alumnos ref="busqueda" v-show="forms.busqueda_alumnos.mostrar"></busqueda_alumnos>
+            <alumnos ref="alumnos" :forms="forms" v-show="forms.alumnos.mostrar" @buscar='buscar("busqueda_alumnos", "obtenerAlumnos")'></alumnos>
+            <busqueda_alumnos ref="busqueda_alumnos" v-show="forms.busqueda_alumnos.mostrar" @modificar='modificar("alumnos", "modificarAlumno", $event)'></busqueda_alumnos>
+
+            <materias ref="materias" :forms="forms" v-show="forms.materias.mostrar" @buscar='buscar("busqueda_materias", "obtenerMaterias")'></materias>
+            <busqueda_materias ref="busqueda_materias" v-show="forms.busqueda_materias.mostrar" @modificar='modificar("materias", "modificarMateria", $event)'></busqueda_materias>
+
+            <matriculas ref="matriculas" :forms="forms" v-show="forms.matriculas.mostrar" @buscar='buscar("busqueda_matriculas", "obtenerMatriculas")'></matriculas>
+            <busqueda_matriculas ref="busqueda_matriculas" v-show="forms.busqueda_matriculas.mostrar" @modificar='modificar("matriculas", "modificarMatricula", $event)'></busqueda_matriculas>
+
+            <inscripciones ref="inscripciones" :forms="forms" v-show="forms.inscripciones.mostrar" @buscar='buscar("busqueda_inscripciones", "obtenerInscripciones")'></inscripciones>
+            <busqueda_inscripciones ref="busqueda_inscripciones" v-show="forms.busqueda_inscripciones.mostrar" @modificar='modificar("inscripciones", "modificarInscripcion", $event)'></busqueda_inscripciones>
+
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    
+    <script src="https://unpkg.com/vue-select@beta"></script>
 
     <script src="alumnos.js"></script>
     <script src="busqueda_alumnos.js"></script>
+    
+    <script src="materias.js"></script>
+    <script src="busqueda_materias.js"></script>
+    
+    <script src="matriculas.js"></script>
+    <script src="busqueda_matriculas.js"></script>
+    
+    <script src="inscripciones.js"></script>
+    <script src="busqueda_inscripciones.js"></script>
     
     <script src="Main.js"></script>
 </body>
