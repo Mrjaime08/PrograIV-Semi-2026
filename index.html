@@ -61,6 +61,16 @@
                                 </a>
                             </li>
 
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-info fw-bold" href="#" id="navbarDropdownParcial" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-journal-check"></i> Parcial I
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdownParcial">
+                                    <li><a class="dropdown-item" href="#" @click="abrirVentana('autores')">Autores</a></li>
+                                    <li><a class="dropdown-item" href="#" @click="abrirVentana('libros')">Libros</a></li>
+                                </ul>
+                            </li>
+
                             <li class="nav-item"><a class="nav-link" :class="{ active: forms.alumnos.mostrar }" href="#" @click="abrirVentana('alumnos')">Alumnos</a></li>
                             <li class="nav-item"><a class="nav-link" :class="{ active: forms.materias.mostrar }" href="#" @click="abrirVentana('materias')">Materias</a></li>
                             <li class="nav-item"><a class="nav-link" :class="{ active: forms.docentes.mostrar }" href="#" @click="abrirVentana('docentes')">Docentes</a></li>
@@ -80,8 +90,13 @@
             <div id="appSistema" class="container pb-5 flex-grow-1">
                 
                 <dashboard ref="dashboard" v-show="forms.dashboard.mostrar" :usuario="usuarioActual" @navegar="abrirVentana"></dashboard>
-                
                 <panel_admin ref="panel_admin" v-show="forms.panel_admin.mostrar"></panel_admin>
+
+                <autores ref="autores" :forms="forms" v-show="forms.autores.mostrar" @buscar='buscar("busqueda_autores", "obtenerAutores")'></autores>
+                <busqueda_autores ref="busqueda_autores" v-show="forms.busqueda_autores.mostrar" @modificar='modificar("autores", "modificarAutor", $event)'></busqueda_autores>
+
+                <libros ref="libros" :forms="forms" v-show="forms.libros.mostrar" @buscar='buscar("busqueda_libros", "obtenerLibros")'></libros>
+                <busqueda_libros ref="busqueda_libros" v-show="forms.busqueda_libros.mostrar" @modificar='modificar("libros", "modificarLibro", $event)'></busqueda_libros>
 
                 <alumnos ref="alumnos" :forms="forms" v-show="forms.alumnos.mostrar" @buscar='buscar("busqueda_alumnos", "obtenerAlumnos")'></alumnos>
                 <busqueda_alumnos ref="busqueda_alumnos" v-show="forms.busqueda_alumnos.mostrar" @modificar='modificar("alumnos", "modificarAlumno", $event)'></busqueda_alumnos>
@@ -130,6 +145,11 @@
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
     <script src="https://unpkg.com/vue-select@beta"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.11.1/sha256.min.js"></script>
+
+    <script src="autores.js"></script>
+    <script src="busqueda_autores.js"></script>
+    <script src="libros.js"></script>
+    <script src="busqueda_libros.js"></script>
 
     <script src="dashboard.js"></script>  
     <script src="alumnos.js"></script>

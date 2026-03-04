@@ -1,16 +1,18 @@
 const { createApp } = Vue;
 
-// 1. Configuración de la Base de Datos (Dexie)
-const db = new Dexie("db_sistema_academico_v4");
+// --- base de datos Dexie con codigo estudiantil---
+const db = new Dexie("db_USSS018724");
 
-// Definimos las tablas
+// Definimos las tablas (agregando autores y libros)
 db.version(1).stores({
     alumnos: "idAlumno, codigo, nombre, direccion, email, telefono, estado",
     materias: "idMateria, codigo, nombre, uv, estado",
     matriculas: "idMatricula, idAlumno, fecha, ciclo",
     inscripciones: "idInscripcion, idAlumno, idMateria, fecha",
     docentes: "idDocente, codigo, nombre, estado",
-    usuarios: "idUsuario, email, password, rol, estado" 
+    usuarios: "idUsuario, email, password, rol, estado",
+    autores: "idAutor, codigo, nombre, nacionalidad",
+    libros: "idLibro, idAutor, titulo, isbn, genero"
 });
 
 // Crear el SÚPER ADMINISTRADOR por defecto
@@ -18,7 +20,7 @@ db.on('populate', async () => {
     await db.usuarios.add({
         idUsuario: 1,
         email: 'jaime@admin.com',
-        password: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // Hash de 'admin123'
+        password: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
         rol: 'superadmin',
         estado: 'activo'
     });
@@ -32,6 +34,8 @@ createApp({
         matriculas, busqueda_matriculas,
         inscripciones, busqueda_inscripciones,
         docentes, busqueda_docentes,
+        autores, busqueda_autores, // <-- NUEVOS
+        libros, busqueda_libros,   // <-- NUEVOS
         login, panel_admin
     },
     data() {
@@ -50,6 +54,10 @@ createApp({
                 busqueda_inscripciones: { mostrar: false },
                 docentes: { mostrar: false },
                 busqueda_docentes: { mostrar: false },
+                autores: { mostrar: false },             // <-- NUEVOS
+                busqueda_autores: { mostrar: false },    // <-- NUEVOS
+                libros: { mostrar: false },              // <-- NUEVOS
+                busqueda_libros: { mostrar: false },     // <-- NUEVOS
                 panel_admin: { mostrar: false }
             }
         }
@@ -60,10 +68,7 @@ createApp({
             this.usuarioActual = usuario;
             this.abrirVentana('dashboard');
         },
-        
-        // NUEVA FUNCIÓN DE CERRAR SESIÓN CON CONFIRMACIÓN 
         async cerrarSesion() {
-            // 1. Preguntamos primero
             const result = await Swal.fire({
                 title: '¿Cerrar Sesión?',
                 text: '¿Estás seguro de que deseas salir del sistema?',
@@ -75,7 +80,6 @@ createApp({
                 cancelButtonText: 'Cancelar'
             });
 
-            // 2. Si el usuario confirma, cerramos la sesión
             if (result.isConfirmed) {
                 Swal.fire({
                     title: 'Sesión Cerrada',
@@ -87,13 +91,11 @@ createApp({
 
                 this.estaAutenticado = false;
                 this.usuarioActual = null;
-                // Ocultar todas las ventanas para que cuando vuelva a entrar esté limpio
                 Object.keys(this.forms).forEach(key => {
                     this.forms[key].mostrar = false;
                 });
             }
         },
-
         abrirVentana(ventana) {
             Object.keys(this.forms).forEach(key => {
                 this.forms[key].mostrar = false;
